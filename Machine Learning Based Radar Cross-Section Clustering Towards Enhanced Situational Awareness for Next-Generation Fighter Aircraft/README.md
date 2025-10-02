@@ -4,7 +4,11 @@ Implemented the research paper titled "Machine Learning Based Radar Cross-Sectio
 
 Here are some pictures:
 
+Initial
 ![alt text](hl1.png)
+After Algo
 ![alt text](hl2.png)
+
+Blur feature
 ![alt text](k9.png)
 ![alt text](k35.png)
