@@ -8,12 +8,9 @@ void DomeStrategy::collisionCheck(Eigen::Vector3d v) {
     
 }
 
-Threat::Threat(Eigen::Vector3d c, int r, int h, std::unique_ptr<GeneratorStrategy> initStrategy)
-    : center(c), R(r), H(h), strategy(std::move(initStrategy)) {}
+Threat::Threat(Eigen::Vector3d c, int r, int h)
+    : center(c), R(r), H(h) {}
 
-void Threat::setStrategy(std::unique_ptr<GeneratorStrategy> newStrategy) {
-    strategy = std::move(newStrategy);
-}
 
 Eigen::Vector3d Threat::getCenter() const {
     return center; 
@@ -59,11 +56,13 @@ Map::Map(Eigen::Vector3d b,
         numberOfThreats = dist(rng);  
     }
 
+    numberOfThreats = 7;
+
     std::uniform_real_distribution<double> ff(0.0, 1.0);
     std::uniform_real_distribution<double> centerX(0.0, bounds.x());
     std::uniform_real_distribution<double> centerY(0.0, bounds.y());
-    std::uniform_int_distribution<int> Rdist(((bounds.x()+bounds.y())/2)*0.01, ((bounds.x()+bounds.y())/2)*0.05);
-    std::uniform_int_distribution<int> Hdist(bounds.z()*0.05, bounds.z()*0.2);
+    std::uniform_int_distribution<int> Rdist(((bounds.x()+bounds.y())/2)*0.08, ((bounds.x()+bounds.y())/2)*0.15);
+    std::uniform_int_distribution<int> Hdist(bounds.z()*0.35, bounds.z()*0.52);
 
     for (int i = 0; i < numberOfThreats; ++i) {
         Eigen::Vector3d pos(centerX(rng), centerY(rng), 0);
@@ -76,7 +75,7 @@ Map::Map(Eigen::Vector3d b,
         else
             strat = std::make_unique<DomeStrategy>();
 
-        Threat t(pos, radius, height, std::move(strat));
+        Threat t(pos, radius, height);
         threats.push_back(std::move(t));
     }
 }

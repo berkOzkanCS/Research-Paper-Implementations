@@ -33,10 +33,8 @@ class Threat {
     Eigen::Vector3d center;
     int R;
     int H;
-    std::unique_ptr<GeneratorStrategy> strategy;
     public:
-        Threat(Eigen::Vector3d center, int R,int H, std::unique_ptr<GeneratorStrategy> initStrategy);
-        void setStrategy(std::unique_ptr<GeneratorStrategy> newStrategy);
+        Threat(Eigen::Vector3d center, int R,int H);
         Eigen::Vector3d getCenter() const;
         void setCenter(const Eigen::Vector3d& c);
         int getR() const { return R; }
