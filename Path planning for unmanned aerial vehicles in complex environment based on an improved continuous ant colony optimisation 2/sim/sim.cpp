@@ -51,17 +51,17 @@ Map::Map(Eigen::Vector3d b,
     std::random_device rd;
     std::mt19937 rng(rd());
 
-    if (numberOfThreats <= 0) {
+    if (numberOfThreats < 0) {
         std::uniform_int_distribution<int> dist(5, 10);
         numberOfThreats = dist(rng);  
     }
 
-    numberOfThreats = 7;
+    numberOfThreats = 0;
 
     std::uniform_real_distribution<double> ff(0.0, 1.0);
     std::uniform_real_distribution<double> centerX(0.0, bounds.x());
     std::uniform_real_distribution<double> centerY(0.0, bounds.y());
-    std::uniform_int_distribution<int> Rdist(((bounds.x()+bounds.y())/2)*0.08, ((bounds.x()+bounds.y())/2)*0.15);
+    std::uniform_int_distribution<int> Rdist(((bounds.x()+bounds.y())/2)*0.08, ((bounds.x()+bounds.y())/2)*0.1);
     std::uniform_int_distribution<int> Hdist(bounds.z()*0.35, bounds.z()*0.52);
 
     for (int i = 0; i < numberOfThreats; ++i) {
@@ -127,9 +127,11 @@ void Map::readMap(const std::string& filePath, int mapWidth, int mapHeight) {
     file.read(reinterpret_cast<char*>(buffer.data()), buffer.size() * sizeof(uint16_t));
 
 
-    if (!file) {
-        throw std::runtime_error("Failed to read full heightmap data from: " + filePath);
-    }
+    // if (!file) {
+    //     std::cout << std::filesystem::current_path() << std::endl;
+    //     std::cout << filePath << std::endl;
+    //     throw std::runtime_error("Failed to read full heightmap data from: " + filePath);
+    // }
 
     heightmap.assign(mapHeight, std::vector<int>(mapWidth, 0));
     for (int y = 0; y < mapHeight; ++y) {

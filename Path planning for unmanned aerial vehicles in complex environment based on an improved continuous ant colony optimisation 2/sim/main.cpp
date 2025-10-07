@@ -19,6 +19,7 @@ int main(int argc, char **argv) {
     std::string map_file_path = argv[1];
     std::ifstream map_file(map_file_path);
     if (!map_file) {
+        std::cout << std::filesystem::current_path() << std::endl;
         std::cerr << "Failed to open " << map_file_path << "\n";
         return 1;
     }
@@ -33,11 +34,11 @@ int main(int argc, char **argv) {
     const int MAP_HEIGHT = ntohl(height);
 
     int obstaclesCnt = static_cast<int>(*argv[2]);
-    Eigen::Vector3d start(10,10,10), goal(530, 450, 300);
+    Eigen::Vector3d start(450,150,50), goal(70, 250, 170);
     
     // automatically generates threats
     Map world(Eigen::Vector3d(MAP_WIDTH, MAP_HEIGHT, MAP_Z), start, {goal}, obstaclesCnt);
-    world.readMap("heightmap.bin", MAP_WIDTH, MAP_HEIGHT);
+    world.readMap("heightmap2.bin", MAP_WIDTH, MAP_HEIGHT);
     // run algorithm using threats, start, goal, terrain
     world.pathfind();
     // world.pathGenerator(15, ' ');

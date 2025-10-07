@@ -22,4 +22,4 @@ def png_to_bin(png_file, bin_file):
     print(f"Saved {data_uint16.shape[0]}x{data_uint16.shape[1]} PNG to binary: {bin_file}")
 
 if __name__ == "__main__":
-    png_to_bin("heightmap.png", "heightmap.bin")
+    png_to_bin("heightmap2.png", "heightmap2.bin")

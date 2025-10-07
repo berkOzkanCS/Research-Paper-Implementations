@@ -15,7 +15,7 @@ clear:
 	rm -f *.o out *.txt
 
 run:
-	./out "heightmap.png" 5
+	./out "heightmap2.png" 5
 
 show:
 	python3 graph.py

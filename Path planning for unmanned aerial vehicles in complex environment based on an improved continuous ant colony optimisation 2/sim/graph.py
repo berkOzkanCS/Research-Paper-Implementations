@@ -59,4 +59,4 @@ def plot_map(png_file, txt_file):
 
     plotter.show()
 
-plot_map("heightmap.png", "map_data.txt")
+plot_map("heightmap2.png", "map_data.txt")
