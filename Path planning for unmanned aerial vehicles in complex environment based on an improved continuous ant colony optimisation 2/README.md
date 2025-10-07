@@ -6,20 +6,20 @@ Implemented this again. Works much better than the second iteration and the sugg
 
 New Version
 
-![alt text](../img/img5.png)
-![alt text](../img/img6.png)
-![alt text](../img/img7.png)
-![alt text](../img/img8.png)
-![alt text](../img/img9.png)
-![alt text](../img/img10.png)
-![alt text](../img/img11.png)
-![alt text](../img/img12.png)
-![alt text](../img/img13.png)
-![alt text](../img/img14.png)s
+![alt text](img/img5.png)
+![alt text](img/img6.png)
+![alt text](img/img7.png)
+![alt text](img/img8.png)
+![alt text](img/img9.png)
+![alt text](img/img10.png)
+![alt text](img/img11.png)
+![alt text](img/img12.png)
+![alt text](img/img13.png)
+![alt text](img/img14.png)
 
 Old Version
 
-![alt text](../img/img1.png)
-![alt text](../img/img2.png)
-![alt text](../img/img3.png)
-![alt text](../img/img4.png)
+![alt text](img/img1.png)
+![alt text](img/img2.png)
+![alt text](img/img3.png)
+![alt text](img/img4.png)
