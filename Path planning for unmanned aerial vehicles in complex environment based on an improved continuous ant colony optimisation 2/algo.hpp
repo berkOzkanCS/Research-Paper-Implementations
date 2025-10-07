@@ -14,12 +14,20 @@
 class Solution {
     public:
     std::vector<Eigen::Vector3d> waypoints;
-
+    double D = 10.0, L = 5.0;
     double cost;
+    double bd = 1.5;
+    double bc = 1.0;
+    double be = 0.2;
+    double bcorn = 1.0;
 
     Solution() : cost(0.0) {}
     double computeCost(Eigen::Vector3d bounds, std::vector<Threat> threats, std::vector<std::vector<int>> heightmap);
-
+    double computeDistanceCost(Eigen::Vector3d bounds);
+    double computeCollisionCost(Eigen::Vector3d bounds, std::vector<Threat> threats);
+    double computeElevationCost(Eigen::Vector3d bounds, std::vector<std::vector<int>> heightmap);
+    double computeCornerCost();
+    void repairWaypoint(char domain, int waypointIndex, Eigen::Vector3d bounds, std::vector<Threat> threats, std::vector<std::vector<int>> heightmap);
 };
 
 class Archive {
@@ -36,7 +44,7 @@ class ACOSRAR {
     const double mu = 0.8; // [0.001, 1.0] small = slower to explore, large = faster to explore
     const double alpha = 1.0; // [0,2] small = large jumps, large = smal lumps
 
-    const int numOfWaypoints = 20;
+    const int numOfWaypoints = 10;
     Eigen::Vector3d bounds;
     int archiveSize;
     Eigen::Vector3d START;
