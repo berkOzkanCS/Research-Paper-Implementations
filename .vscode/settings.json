@@ -6,6 +6,9 @@
         "deque": "cpp",
         "list": "cpp",
         "core": "cpp",
-        "complex": "cpp"
+        "complex": "cpp",
+        "limits": "cpp",
+        "iosfwd": "cpp",
+        "iostream": "cpp"
     }
 }
