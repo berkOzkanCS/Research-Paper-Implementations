@@ -56,8 +56,6 @@ Map::Map(Eigen::Vector3d b,
         numberOfThreats = dist(rng);  
     }
 
-    numberOfThreats = 0;
-
     std::uniform_real_distribution<double> ff(0.0, 1.0);
     std::uniform_real_distribution<double> centerX(0.0, bounds.x());
     std::uniform_real_distribution<double> centerY(0.0, bounds.y());

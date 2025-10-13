@@ -33,8 +33,8 @@ int main(int argc, char **argv) {
     const int MAP_WIDTH = ntohl(width);
     const int MAP_HEIGHT = ntohl(height);
 
-    int obstaclesCnt = static_cast<int>(*argv[2]);
-    Eigen::Vector3d start(450,150,50), goal(70, 250, 170);
+    int obstaclesCnt = std::stoi(argv[2]);
+    Eigen::Vector3d start(450,150,61), goal(245, 500, 160);
     
     // automatically generates threats
     Map world(Eigen::Vector3d(MAP_WIDTH, MAP_HEIGHT, MAP_Z), start, {goal}, obstaclesCnt);
