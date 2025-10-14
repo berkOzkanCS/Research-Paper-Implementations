@@ -6,7 +6,7 @@ This paper combines global A* and the Dynamic Window Approach (DWA). A desired p
 
 The final result:
 
-<img src="img/img5.png" alt="alt text" width="600" height="600">
+<img src="img/img5.png" alt="alt text" width="800" height="600">
 <img src="img/img4.png" alt="alt text" width="600" height="600">
 
 Some examples of the A-star:
