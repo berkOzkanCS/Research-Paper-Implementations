@@ -74,6 +74,8 @@
         "set": "cpp",
         "unordered_set": "cpp",
         "__tree": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "queue": "cpp",
+        "stack": "cpp"
     }
 }

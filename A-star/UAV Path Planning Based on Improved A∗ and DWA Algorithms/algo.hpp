@@ -33,7 +33,10 @@ struct Node {
 
 void init_game(Vector2d &s, Vector2d &g);
 vector<Node*> generateAstarPath();
-bool NodeComparator(const Node* a, const Node* b);
+vector<Node*> floyd(vector<Node*> p);
+bool lineIntersectsAnyCircle(const Vector2d& p1, const Vector2d& p2, const vector<Obstacle>& obs);
+
+vector<Vector2d> runDWA(const vector<Node*>& p);
 
 void savePathAndObstacles(const vector<Node*> pathNodes, const std::string& filename = "path_data.txt");
 
@@ -43,5 +46,27 @@ bool isInClosedSet(const std::vector<Node*>& closedSet, const Node* n);
 Node* findInOpenSet(const std::vector<Node*>& openSet, const Node* n);
 bool NodeComparator(const Node* a, const Node* b);
 
+struct DWAParams {
+    double v_max = 5.0;
+    double v_min = 0.0;
+    double w_max = 1.0;
+    double w_min = -1.0;
+    double a_acc = 1.0;   // linear max accel
+    double a_dec = 1.0;   // linear max decel (positive)
+    double alpha_acc = 1.0; // angular accel
+    double alpha_dec = 1.0; // angular decel (positive)
+    double dt = 0.1;      // control timestep
+    double predict_time = 1.0; // prediction horizon
+    int v_samples = 7;
+    int w_samples = 7;
+    double safety_margin = 0.1; // extra clearance [m]
+    // evaluation weights (tweak)
+    double alpha_heading = 1.0;
+    double beta0 = 1.0; // max speed weight
+    double gamma_known = 1.0;
+    double lambda_unknown = 1.0;
+    double Ds = 2.0; // safety threshold for adaptive beta
+    double eta = 0.5; // adaption strength
+};
 
 #endif

@@ -177,6 +177,53 @@ vector<Node*> generateAstarPath() {
     return pathNodes;
 }
 
+vector<Node*> floyd(vector<Node*> p) {
+    // pretty simple starting from start node, check if it can connect to a node that is further ahead. if so, skip the nodes in between.
+    // need a function that takes in two points, and tests if the line intersects any of the threats (circles)
+    int size = p.size();
+    for (size_t i = 0; i < size; i++) {
+        Node* current = p[i];
+        int step = size / 3; 
+        int y = (i + step >= size) ? size-1 : i + step;
+        Node* next = (y < 0) ? p.back() : p[y];
+        while (next->connection != nullptr) {
+            if (!lineIntersectsAnyCircle(current->pos, next->pos, obstacles)) {
+                if (i + 1 != y) {
+                    p[y]->connection = current;
+                    p.erase(p.begin() + i + 1, p.begin() + y);
+                    break;
+                }
+            }
+            next = next->connection;
+        }
+        size = p.size();
+    }
+    cout << "done with floyd\n";
+    return p;
+}
+
+bool lineIntersectsAnyCircle(const Vector2d& p1, const Vector2d& p2, const vector<Obstacle>& obs) {
+    for (const auto& o : obs) {
+        Eigen::Vector2d d = p2 - p1;
+        Eigen::Vector2d f = p1 - o.c;
+
+        double a = d.dot(d);
+        double b = 2 * f.dot(d);
+        double c = f.dot(f) - o.r * o.r;
+
+        double disc = b * b - 4 * a * c;
+        if (disc < 0) continue;
+
+        double sqrtDisc = std::sqrt(disc);
+        double t1 = (-b - sqrtDisc) / (2 * a);
+        double t2 = (-b + sqrtDisc) / (2 * a);
+
+        if ((t1 >= 0 && t1 <= 1) || (t2 >= 0 && t2 <= 1))
+            return true;
+    }
+    return false;
+}
+
 void savePathAndObstacles(const vector<Node*> pathNodes, const std::string& filename) {
     std::ofstream outFile(filename);
     if (!outFile.is_open()) {
@@ -208,6 +255,65 @@ void savePathAndObstacles(const vector<Node*> pathNodes, const std::string& file
     std::cout << "Path and obstacles saved to " << filename << "\n";
 }
 
+vector<Vector2d> runDWA(const vector<Node*>& p) {
+    vector<Vector2d> fullTraj;
+    if (p.size() < 2) return fullTraj;
+
+    DWAParams P;
+    Vector2d pos = p.front()->pos;
+    double theta = 0.0, v = 0.0, w = 0.0;
+
+    for (size_t i = 1; i < p.size(); ++i) {
+        Vector2d goal = p[i]->pos;
+        for (int iter = 0; iter < 80; ++iter) {  // local iterations
+            Vector2d toGoal = goal - pos;
+            if (toGoal.norm() < 10.0) break;
+
+            // --- Dynamic window ---
+            double v_min = std::max(P.v_min, v - P.a_dec * P.dt);
+            double v_max = std::min(P.v_max, v + P.a_acc * P.dt);
+            double w_min = std::max(P.w_min, w - P.alpha_dec * P.dt);
+            double w_max = std::min(P.w_max, w + P.alpha_acc * P.dt);
+
+            double bestScore = -1e9, bestV = v, bestW = w;
+            for (int vi = 0; vi < P.v_samples; ++vi) {
+                double vt = v_min + (v_max - v_min) * vi / (P.v_samples - 1);
+                for (int wi = 0; wi < P.w_samples; ++wi) {
+                    double wt = w_min + (w_max - w_min) * wi / (P.w_samples - 1);
+
+                    Vector2d newPos = pos + Vector2d(cos(theta), sin(theta)) * vt * P.dt;
+                    double newTheta = theta + wt * P.dt;
+
+                    if (isBlocked(newPos, MAX_X, MAX_Y, obstacles)) continue;
+
+                    double heading = cos(atan2((goal - newPos).y(), (goal - newPos).x()) - newTheta);
+                    double velScore = vt / P.v_max;
+                    double distScore = 0.0;
+                    for (const auto& o : obstacles)
+                        distScore += (newPos - o.c).norm() - o.r;
+                    double score = P.alpha_heading * heading + P.beta0 * velScore + 0.001 * distScore;
+
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestV = vt;
+                        bestW = wt;
+                    }
+                }
+            }
+
+            // apply best command
+            v = bestV;
+            w = bestW;
+            pos += Vector2d(cos(theta), sin(theta)) * v * P.dt;
+            theta += w * P.dt;
+
+            fullTraj.push_back(pos);
+        }
+    }
+
+    cout << "DWA simulation done. Generated " << fullTraj.size() << " points.\n";
+    return fullTraj;
+}
 
 
 bool isInClosedSet(const std::vector<Node*>& closedSet, const Node* n) {
@@ -228,10 +334,7 @@ Node* findInOpenSet(const std::vector<Node*>& openSet, const Node* n) {
     return nullptr; // not found
 }
 
-bool isBlocked(const Eigen::Vector2d& v,
-               int MAX_X, int MAX_Y,
-               const std::vector<Obstacle>& obstacles)
-{
+bool isBlocked(const Eigen::Vector2d& v, int MAX_X, int MAX_Y, const std::vector<Obstacle>& obstacles) {
     // Out of bounds
     if (v.x() < 0 || v.x() > MAX_X || v.y() < 0 || v.y() > MAX_Y)
         return true;
@@ -248,7 +351,7 @@ bool isBlocked(const Eigen::Vector2d& v,
 bool inObstacle(const Eigen::Vector2d& point, const Obstacle& o) {
     double dx = point.x() - o.c.x();
     double dy = point.y() - o.c.y();
-    return (dx*dx + dy*dy) < (o.r * o.r);
+    return (dx*dx + dy*dy) < (o.r * o.r) + 5;
 }
 
 bool NodeComparator(const Node* a, const Node* b) {

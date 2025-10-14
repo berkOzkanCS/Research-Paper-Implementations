@@ -8,9 +8,14 @@ int main() {
     Vector2d goal(80,80);
 
     init_game(start, goal);    
-    auto path = generateAstarPath();
+    vector<Node*> path = generateAstarPath();
+    savePathAndObstacles(path, "astar.txt");
 
-    savePathAndObstacles(path, "path_data.txt");
+    path = floyd(path);
+    savePathAndObstacles(path, "floyd.txt");
+
+    auto localTraj = runDWA(path);
+    savePathAndObstacles(path, "dwa.txt");
 
     // REMEMBER TO DELETE new
 

@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import sys
 
 def read_and_plot(filename="path_data.txt"):
     MAX_X = MAX_Y = 0
@@ -68,4 +69,5 @@ def read_and_plot(filename="path_data.txt"):
     plt.show(block=True)
 
 if __name__ == "__main__":
-    read_and_plot("path_data.txt")
+    filename = sys.argv[1] if len(sys.argv) > 1 else "path_data.txt"
+    read_and_plot(filename)
