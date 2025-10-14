@@ -4,6 +4,8 @@ Implemented the research paper titled "UAV Path Planning Based on Improved A∗a
 
 This paper combines global A* and the Dynamic Window Approach (DWA). A desired path is first found using A*. Then, using Floyd's algorithm, redundant nodes are removed from the path. Finally, DWA is used to turn the path into a one fliable by the UAV according to it's parameters. Over all, the proposed method is a useful algorithm. 
 
+In my implementation I used circles as obsicles for easy calculations. Additionally, for the sake of simplifying the implementation I forwent a 3d world and terrain map.
+
 The final result:
 
 <img src="img/img5.png" alt="alt text" width="800" height="600">
